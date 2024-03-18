@@ -1,0 +1,43 @@
+// Overriding Bootstrap's default colors
+
+$vibrant-primary: #ff4757;
+$vibrant-secondary: #7bed9f;
+$vibrant-success: #5352ed;
+$vibrant-danger: #ffa502;
+$vibrant-warning: #eccc68;
+$vibrant-info: #2ed573;
+$vibrant-light: #70a1ff;
+$vibrant-dark: #1e90ff;
+
+// Using Variables for Border Styles
+.border-vibrant-primary {
+  border-color: $vibrant-primary;
+}
+
+.border-vibrant-secondary {
+  border-color: $vibrant-secondary;
+}
+
+.border-vibrant-success {
+  border-color: $vibrant-success;
+}
+
+.border-vibrant-danger {
+  border-color: $vibrant-danger;
+}
+
+.border-vibrant-warning {
+  border-color: $vibrant-warning;
+}
+
+.border-vibrant-info {
+  border-color: $vibrant-info;
+}
+
+.border-vibrant-light {
+  border-color: $vibrant-light;
+}
+
+.border-vibrant-dark {
+  border-color: $vibrant-dark;
+}
