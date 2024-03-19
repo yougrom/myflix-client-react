@@ -1,9 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
+import { useParams, Link } from "react-router-dom";
 
-export const MovieView = ({ movie, onBackClick }) => {
-  console.log("Movie: ", movie);
+export const MovieView = ({ movies }) => {
+  const { movieId } = useParams();
+
+  const movie = movies.find((m) => m._id === movieId);
+
+  if (!movie) {
+    return <div>Movie not found</div>;
+  }
 
   return (
     <div className="movie-view">
@@ -34,32 +41,36 @@ export const MovieView = ({ movie, onBackClick }) => {
           Born: {new Date(movie.Director.Birth).toLocaleDateString()}
         </div>
       </div>
-      <Button
-        onClick={onBackClick}
-        variant="primary"
-        size="sm"
-        style={{ cursor: "pointer" }}
-      >
-        Back
-      </Button>
+      <Link to={`/`}>
+        <Button
+          variant="primary"
+          size="md"
+          className="mt-3"
+          style={{ cursor: "pointer" }}
+        >
+          Back
+        </Button>
+      </Link>
     </div>
   );
 };
 
 MovieView.propTypes = {
-  movie: PropTypes.shape({
-    Title: PropTypes.string.isRequired,
-    Description: PropTypes.string.isRequired,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      Title: PropTypes.string.isRequired,
       Description: PropTypes.string.isRequired,
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
-      Bio: PropTypes.string.isRequired,
-      Birth: PropTypes.string.isRequired,
-    }),
-    ImagePath: PropTypes.string.isRequired,
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
+      Genre: PropTypes.shape({
+        Name: PropTypes.string.isRequired,
+        Description: PropTypes.string.isRequired,
+      }),
+      Director: PropTypes.shape({
+        Name: PropTypes.string.isRequired,
+        Bio: PropTypes.string.isRequired,
+        Birth: PropTypes.string.isRequired,
+      }),
+      ImagePath: PropTypes.string.isRequired,
+      _id: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };

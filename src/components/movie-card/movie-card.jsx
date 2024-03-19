@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Button, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import "./movie-card.scss";
 
@@ -22,7 +23,7 @@ const getRandomBorderClass = () => {
 };
 //********************************** Random border color End ************************************* */
 
-export const MovieCard = ({ movie, onMovieClick }) => {
+export const MovieCard = ({ movie }) => {
   //******************************  Random border color Start ***************************************** */
   const borderClass = getRandomBorderClass();
   //********************************Random border color End *************************************** */
@@ -33,9 +34,15 @@ export const MovieCard = ({ movie, onMovieClick }) => {
       <Card.Body className="d-flex flex-column justify-content-between">
         <Card.Title>{movie.Title}</Card.Title>
         <Card.Text>{movie.Description}</Card.Text>
-        <Button onClick={() => onMovieClick(movie)} variant="outline-primary">
-          {movie.Title}
-        </Button>
+        <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
+          <Button
+            // onClick={() => onMovieClick(movie)}
+            variant="outline-primary"
+            className="mt-3"
+          >
+            {movie.Title}
+          </Button>
+        </Link>
       </Card.Body>
     </Card>
   );
@@ -56,6 +63,6 @@ MovieCard.propTypes = {
       Birth: PropTypes.string,
     }),
     ImagePath: PropTypes.string,
+    _id: PropTypes.string.isRequired,
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired,
 };

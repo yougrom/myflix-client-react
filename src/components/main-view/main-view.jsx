@@ -6,6 +6,7 @@ import { SignupView } from "../signup-view/signup-view";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -13,10 +14,13 @@ const MainView = () => {
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  // const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     if (!token) {
+      //=========================
+      console.log("Token not found.");
+      //=========================
       return;
     }
 
@@ -49,66 +53,65 @@ const MainView = () => {
           };
         });
         setMovies(formattedMovies);
+        //=========================
+        console.log("Formatted movies:", formattedMovies);
+        //=========================
       })
+
       .catch((error) => {
         console.error("There was a problem with your fetch operation:", error);
       });
   }, [token]);
 
   return (
-    <Row className="justify-content-md-center">
-      {!user ? (
-        <Col md={12}>
-          <LoginView
-            onLoggedIn={(user, token) => {
-              setUser(user);
-              setToken(token);
-              localStorage.setItem("user", JSON.stringify(user));
-              localStorage.setItem("token", token);
-            }}
+    <BrowserRouter>
+      <Row className="justify-content-md-center">
+        <Routes>
+          <Route
+            path="/signup"
+            element={user ? <Navigate to="/" /> : <SignupView />}
           />
-          <hr className="mt-5 mb-5" style={{ color: "#0d6efd" }}></hr>
-          <SignupView />
-        </Col>
-      ) : (
-        <>
-          <Button
-            onClick={() => {
-              setUser(null);
-              setToken(null);
-              localStorage.removeItem("user");
-              localStorage.removeItem("token");
-            }}
-            style={{ cursor: "pointer", marginBottom: "20px" }}
-            variant="danger"
-            size="sm"
-          >
-            Logout
-          </Button>
-
-          {selectedMovie ? (
-            <Col md={8}>
-              <MovieView
-                movie={selectedMovie}
-                onBackClick={() => setSelectedMovie(null)}
-              />
-            </Col>
-          ) : movies.length === 0 ? (
-            <div>The list is empty!</div>
-          ) : (
-            movies.map((movie) => (
-              <Col className="mb-4" key={movie.id} md={3}>
-                <MovieCard
-                  key={movie._id}
-                  movie={movie}
-                  onMovieClick={(movie) => setSelectedMovie(movie)}
-                />
-              </Col>
-            ))
-          )}
-        </>
-      )}
-    </Row>
+          <Route
+            path="/login"
+            element={
+              user ? (
+                <Navigate to="/" />
+              ) : (
+                <LoginView onLoggedIn={(user) => setUser(user)} />
+              )
+            }
+          />
+          <Route
+            //=========================
+            // path="/movies"
+            path="/movies/:_id"
+            // path="/movies/:movieId"
+            //=========================
+            element={
+              !user ? <Navigate to="/login" /> : <MovieView movies={movies} />
+            }
+          />
+          <Route
+            path="/"
+            element={
+              !user ? (
+                <Navigate to="/login" />
+              ) : movies.length === 0 ? (
+                <Col>The list is empty!</Col>
+              ) : (
+                <>
+                  {movies.map((movie) => (
+                    <Col key={movie._id} md={3}>
+                      <MovieCard movie={movie} />
+                    </Col>
+                  ))}
+                </>
+              )
+            }
+          />
+        </Routes>
+      </Row>
+    </BrowserRouter>
   );
 };
 
