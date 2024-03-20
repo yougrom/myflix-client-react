@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -14,13 +15,10 @@ const MainView = () => {
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
-  // const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     if (!token) {
-      //=========================
       console.log("Token not found.");
-      //=========================
       return;
     }
 
@@ -35,36 +33,31 @@ const MainView = () => {
         return response.json();
       })
       .then((moviesFromApi) => {
-        const formattedMovies = moviesFromApi.map((movie) => {
-          return {
-            _id: movie._id,
-            Title: movie.Title,
-            Description: movie.Description,
-            Genre: {
-              Name: movie.Genre.Name,
-              Description: movie.Genre.Description,
-            },
-            Director: {
-              Name: movie.Director.Name,
-              Bio: movie.Director.Bio,
-              Birth: movie.Director.Birth,
-            },
-            ImagePath: movie.ImagePath,
-          };
-        });
+        const formattedMovies = moviesFromApi.map((movie) => ({
+          _id: movie._id,
+          Title: movie.Title,
+          Description: movie.Description,
+          Genre: movie.Genre,
+          Director: movie.Director,
+          ImagePath: movie.ImagePath,
+        }));
         setMovies(formattedMovies);
-        //=========================
         console.log("Formatted movies:", formattedMovies);
-        //=========================
       })
-
       .catch((error) => {
         console.error("There was a problem with your fetch operation:", error);
       });
   }, [token]);
 
+  const onLoggedOut = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.clear();
+  };
+
   return (
     <BrowserRouter>
+      <NavigationBar user={user} onLoggedOut={onLoggedOut} />
       <Row className="justify-content-md-center">
         <Routes>
           <Route
@@ -82,11 +75,7 @@ const MainView = () => {
             }
           />
           <Route
-            //=========================
-            // path="/movies"
             path="/movies/:_id"
-            // path="/movies/:movieId"
-            //=========================
             element={
               !user ? <Navigate to="/login" /> : <MovieView movies={movies} />
             }
