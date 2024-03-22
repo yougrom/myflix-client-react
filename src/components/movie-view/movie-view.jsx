@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useParams, Link } from "react-router-dom";
 
 export const MovieView = ({ movies }) => {
-  const { movieId } = useParams();
+  const { _id: movieId } = useParams();
 
   const movie = movies.find((m) => m._id === movieId);
 
