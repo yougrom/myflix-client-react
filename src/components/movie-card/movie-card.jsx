@@ -25,7 +25,7 @@ const getRandomBorderClass = () => {
 };
 //********************************** Random border color End ************************************* */
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({ movie, toggleFavorite, isFavorite }) => {
   //******************************  Random border color Start ***************************************** */
   const borderClass = getRandomBorderClass();
   //********************************Random border color End *************************************** */
@@ -45,6 +45,13 @@ export const MovieCard = ({ movie }) => {
             {movie.Title}
           </Button>
         </Link>
+        <Button
+          variant={isFavorite ? "warning" : "outline-primary"}
+          className="mt-3"
+          onClick={() => toggleFavorite(movie._id)}
+        >
+          {isFavorite ? "Unfavorite" : "Favorite"}
+        </Button>
       </Card.Body>
     </Card>
   );
