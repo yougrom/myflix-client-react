@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
+import { ProfileView } from "../profile-view/profile-view";
 
 const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -18,7 +19,7 @@ const MainView = () => {
 
   useEffect(() => {
     if (!token) {
-      console.log("Token not found.");
+      // console.log("Token not found.");
       return;
     }
 
@@ -42,7 +43,7 @@ const MainView = () => {
           ImagePath: movie.ImagePath,
         }));
         setMovies(formattedMovies);
-        console.log("Formatted movies:", formattedMovies);
+        // console.log("Formatted movies:", formattedMovies);
       })
       .catch((error) => {
         console.error("There was a problem with your fetch operation:", error);
@@ -80,6 +81,18 @@ const MainView = () => {
               !user ? <Navigate to="/login" /> : <MovieView movies={movies} />
             }
           />
+
+          <Route
+            path="/profile"
+            element={
+              !user ? (
+                <Navigate to="/login" />
+              ) : (
+                <ProfileView movies={movies} user={user} />
+              )
+            }
+          />
+
           <Route
             path="/"
             element={
