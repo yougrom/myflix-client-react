@@ -13,6 +13,7 @@ import { ProfileView } from "../profile-view/profile-view";
 const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
+  const [userInfo, setUserInfo] = useState(null);
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
@@ -55,6 +56,49 @@ const MainView = () => {
     setToken(null);
     localStorage.clear();
   };
+
+  /*********************************** */
+  const toggleFavorite = (movieId) => {
+    const isFavorite = userInfo?.FavoriteMovies.includes(movieId);
+    const method = isFavorite ? "DELETE" : "POST";
+    const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+
+    fetch(url, {
+      method: method,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Checking if the response returns JSON
+          const contentType = response.headers.get("Content-Type");
+          if (contentType && contentType.includes("application/json")) {
+            return response.json(); // If the response is JSON, parse it
+          } else {
+            return response.text(); // Otherwise, we process it as text
+          }
+        } else {
+          throw new Error("Could not update favorites");
+        }
+      })
+      .then((data) => {
+        // We update the state or do something else depending on the response
+        if (typeof data === "string") {
+          // Обработка текстового сообщения от сервера, если необходимо
+          console.log(data);
+        } else {
+          // 'data' is assumed to be the updated userInfo object
+          setUserInfo(data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  /*********************************** */
+  const isFavorite = (movieId) => userInfo?.FavoriteMovies.includes(movieId);
 
   return (
     <BrowserRouter>
@@ -104,7 +148,12 @@ const MainView = () => {
                 <>
                   {movies.map((movie) => (
                     <Col key={movie._id} md={3}>
-                      <MovieCard movie={movie} />
+                      <MovieCard
+                        key={movie._id}
+                        movie={movie}
+                        toggleFavorite={() => toggleFavorite(movie._id)}
+                        isFavorite={isFavorite(movie._id)}
+                      />
                     </Col>
                   ))}
                 </>

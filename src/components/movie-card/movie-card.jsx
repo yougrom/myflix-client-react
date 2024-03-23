@@ -37,11 +37,7 @@ export const MovieCard = ({ movie, toggleFavorite, isFavorite }) => {
         <Card.Title>{movie.Title}</Card.Title>
         <Card.Text>{movie.Description}</Card.Text>
         <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
-          <Button
-            // onClick={() => onMovieClick(movie)}
-            variant="outline-primary"
-            className="mt-3"
-          >
+          <Button variant="outline-primary" className="mt-3">
             {movie.Title}
           </Button>
         </Link>
@@ -59,6 +55,7 @@ export const MovieCard = ({ movie, toggleFavorite, isFavorite }) => {
 
 // PropTypes for MovieCard
 MovieCard.propTypes = {
+  toggleFavorite: PropTypes.func,
   movie: PropTypes.shape({
     Title: PropTypes.string.isRequired,
     Description: PropTypes.string,
