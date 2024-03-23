@@ -33,6 +33,8 @@ export const LoginView = ({ onLoggedIn }) => {
       })
       .then((data) => {
         if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("token", data.token);
           onLoggedIn(data.user, data.token);
         } else {
           alert("No such user");
@@ -41,15 +43,8 @@ export const LoginView = ({ onLoggedIn }) => {
       .catch((e) => {
         alert("Something went wrong: " + e.message);
       });
-
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
-      onLoggedIn(data.user, data.token);
-    } else {
-      alert("No such user");
-    }
   };
+
   return (
     <Container>
       <Row>
