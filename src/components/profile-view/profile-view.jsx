@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
+// import Row from "react-bootstrap/Row";
+// import Col from "react-bootstrap/Col";
+import { Form, Button, Row, Col, Container } from "react-bootstrap";
 
 export const ProfileView = ({ movies, user }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -44,7 +47,10 @@ export const ProfileView = ({ movies, user }) => {
   const toggleFavorite = (movieId) => {
     const isFavorite = userInfo?.FavoriteMovies.includes(movieId);
     const method = isFavorite ? "DELETE" : "POST";
-    const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+    const urlBase = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}`;
+    const url = isFavorite
+      ? `${urlBase}/FavoriteMovies/${movieId}`
+      : `${urlBase}/movies/${movieId}`;
 
     fetch(url, {
       method: method,
@@ -90,55 +96,85 @@ export const ProfileView = ({ movies, user }) => {
   if (!userInfo) return <div>Loading...</div>;
 
   return (
-    <div>
+    <Container>
       <h1>{userInfo.Username}'s Profile</h1>
-      <form onSubmit={handleUpdate}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Birthday:</label>
-          <input
-            type="date"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-          />
-        </div>
-        <Button type="submit">Update Profile</Button>
-      </form>
-      <Button
-        onClick={() => {
-          /* function to remove user */
-        }}
-      >
-        Deregister
-      </Button>
+      <Form onSubmit={handleUpdate}>
+        <Form.Group as={Row} className="mb-3" controlId="formUsername">
+          <Form.Label column sm={2}>
+            Username:
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formEmail">
+          <Form.Label column sm={2}>
+            Email:
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3" controlId="formBirthday">
+          <Form.Label column sm={2}>
+            Birthday:
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="date"
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
+            />
+          </Col>
+        </Form.Group>
+        <Row className="mb-3">
+          <Col sm={12} className="d-flex justify-content-between">
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={() => {
+                /* function to Update user */
+              }}
+            >
+              Update Profile
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                /* function to remove user */
+              }}
+            >
+              Deregister
+            </Button>
+          </Col>
+        </Row>
+      </Form>
       <div className="favorites">
         <h2>Favorite Movies</h2>
-        {movies
-          .filter((m) => userInfo?.FavoriteMovies.includes(m._id))
-          .map((movie) => (
-            <MovieCard
-              key={movie._id}
-              movie={movie}
-              toggleFavorite={() => toggleFavorite(movie._id)}
-              isFavorite={isFavorite(movie._id)}
-            />
-          ))}
+        <Row className="justify-content-md-center">
+          {movies
+            .filter((m) => userInfo?.FavoriteMovies.includes(m._id))
+            .map((movie) => (
+              <Col key={movie._id} sm={6} md={4} lg={3} className="mb-4">
+                {/* Компонент MovieCard должен быть адаптирован для использования с react-bootstrap, если необходимо */}
+                <MovieCard
+                  key={movie._id}
+                  movie={movie}
+                  toggleFavorite={() => toggleFavorite(movie._id)}
+                  isFavorite={isFavorite(movie._id)}
+                />
+              </Col>
+            ))}
+        </Row>
       </div>
-    </div>
+    </Container>
   );
 };

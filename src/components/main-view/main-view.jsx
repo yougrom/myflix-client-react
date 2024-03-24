@@ -61,7 +61,10 @@ const MainView = () => {
   const toggleFavorite = (movieId) => {
     const isFavorite = userInfo?.FavoriteMovies.includes(movieId);
     const method = isFavorite ? "DELETE" : "POST";
-    const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+    const urlBase = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}`;
+    const url = isFavorite
+      ? `${urlBase}/FavoriteMovies/${movieId}`
+      : `${urlBase}/movies/${movieId}`;
 
     fetch(url, {
       method: method,
@@ -109,6 +112,7 @@ const MainView = () => {
             path="/signup"
             element={user ? <Navigate to="/" /> : <SignupView />}
           />
+
           <Route
             path="/login"
             element={
@@ -119,6 +123,7 @@ const MainView = () => {
               )
             }
           />
+
           <Route
             path="/movies/:_id"
             element={
@@ -147,7 +152,13 @@ const MainView = () => {
               ) : (
                 <>
                   {movies.map((movie) => (
-                    <Col key={movie._id} md={3}>
+                    <Col
+                      key={movie._id}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                      className="margin"
+                    >
                       <MovieCard
                         key={movie._id}
                         movie={movie}
