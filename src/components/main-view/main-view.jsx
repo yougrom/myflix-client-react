@@ -100,8 +100,10 @@ const MainView = () => {
         console.error(error);
       });
   };
+
   /*********************************** */
   const isFavorite = (movieId) => userInfo?.FavoriteMovies.includes(movieId);
+  /*********************************** */
 
   return (
     <BrowserRouter>

@@ -10,6 +10,7 @@ export const ProfileView = ({ movies, user }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}`;
@@ -29,6 +30,7 @@ export const ProfileView = ({ movies, user }) => {
       .then((data) => {
         setUserInfo(data);
         setUsername(data.Username);
+        setPassword(data.Password);
         setEmail(data.Email);
         setBirthday(data.Birthday ? data.Birthday.split("T")[0] : "");
       })
@@ -111,6 +113,20 @@ export const ProfileView = ({ movies, user }) => {
             />
           </Col>
         </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="formPassword">
+          <Form.Label column sm={2}>
+            Password:
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} className="mb-3" controlId="formEmail">
           <Form.Label column sm={2}>
             Email:
