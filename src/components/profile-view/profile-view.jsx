@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
-// import Button from "react-bootstrap/Button";
-// import Row from "react-bootstrap/Row";
-// import Col from "react-bootstrap/Col";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
+// import { useHistory } from "react-router-dom";
 
 export const ProfileView = ({ movies, user }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -39,11 +37,11 @@ export const ProfileView = ({ movies, user }) => {
       });
   }, [user.Username, user.token]); // These dependencies ensure that the request will be executed when the username or token changes
 
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    // code to send updated information to the server
-    console.log(username, email, birthday);
-  };
+  // const handleUpdate = (e) => {
+  //   e.preventDefault();
+  //   // code to send updated information to the server
+  //   console.log(username, email, birthday);
+  // };
 
   //************************************* */
   const toggleFavorite = (movieId) => {
@@ -88,7 +86,6 @@ export const ProfileView = ({ movies, user }) => {
         console.error(error);
       });
   };
-
   // console.log(toggleFavorite);
 
   //****************************************** */
@@ -96,6 +93,77 @@ export const ProfileView = ({ movies, user }) => {
   //****************************************** */
 
   if (!userInfo) return <div>Loading...</div>;
+
+  // Function to handle user deregistration ************************************
+  const handleDeregister = () => {
+    const confirmDeregister = window.confirm(
+      "Are you sure you want to deregister?"
+    );
+    if (confirmDeregister) {
+      const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}`;
+
+      fetch(url, {
+        method: "DELETE", // Method itself
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Network response was not ok.");
+        })
+        .then((data) => {
+          console.log(data.message);
+          localStorage.removeItem("token"); // Assuming 'token' is the name of your stored token
+          // Redirect user to login page or show a message
+          // Or if using hooks: useHistory from 'react-router-dom' and then history.push('/login');
+          window.location = "/login"; // Example redirect, adjust according to your setup
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  };
+  // Function to handle user deregistration ************************************
+
+  // Function to handle user update START ************************************
+  const handleUpdate = (e) => {
+    e.preventDefault(); // Prevent the default form submit behavior
+
+    const url = `https://dry-ridge-94435-1154c64a056a.herokuapp.com/users/${user.Username}`;
+    const updatedUserInfo = {
+      Username: username,
+      Password: password, // Note: Storing passwords on the client-side and transmitting them can be risky. Ensure your application is secure and follows best practices.
+      Email: email,
+      Birthday: birthday,
+    };
+
+    fetch(url, {
+      method: "PUT", // Use PUT method to update user info
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace 'token' with your auth token key
+      },
+      body: JSON.stringify(updatedUserInfo), // Convert the JavaScript object to a JSON string
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Update successful", data);
+        // Here, update the state or UI based on the response
+        // For instance, updating the userInfo state with the updated data
+        setUserInfo(data);
+        alert("Profile updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+      });
+  };
+  // Function to handle user update END ************************************
 
   return (
     <Container>
@@ -153,21 +221,10 @@ export const ProfileView = ({ movies, user }) => {
         </Form.Group>
         <Row className="mb-3">
           <Col sm={12} className="d-flex justify-content-between">
-            <Button
-              variant="primary"
-              type="submit"
-              onClick={() => {
-                /* function to Update user */
-              }}
-            >
+            <Button variant="primary" type="submit" onClick={() => {}}>
               Update Profile
             </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                /* function to remove user */
-              }}
-            >
+            <Button variant="danger" onClick={handleDeregister}>
               Deregister
             </Button>
           </Col>
