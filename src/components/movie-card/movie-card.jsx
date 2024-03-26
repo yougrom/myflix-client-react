@@ -2,12 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-// import Col from "react-bootstrap/Col";
-// import Row from "react-bootstrap/Row";
 
 import "./movie-card.scss";
 
-//********************************* Random border color Start ***************************************/
+//Random border color
 const borderClasses = [
   "border-vibrant-primary",
   "border-vibrant-secondary",
@@ -23,12 +21,9 @@ const getRandomBorderClass = () => {
   const randomIndex = Math.floor(Math.random() * borderClasses.length);
   return borderClasses[randomIndex];
 };
-//********************************** Random border color End ************************************* */
 
 export const MovieCard = ({ movie, toggleFavorite, isFavorite }) => {
-  //******************************  Random border color Start ***************************************** */
-  const borderClass = getRandomBorderClass();
-  //********************************Random border color End *************************************** */
+  const borderClass = getRandomBorderClass(); // Random border color
 
   return (
     <Card className={`h-100 ${borderClass}`}>

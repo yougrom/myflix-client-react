@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
-// import { useHistory } from "react-router-dom";
 
 export const ProfileView = ({ movies, user }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -37,12 +36,6 @@ export const ProfileView = ({ movies, user }) => {
       });
   }, [user.Username, user.token]); // These dependencies ensure that the request will be executed when the username or token changes
 
-  // const handleUpdate = (e) => {
-  //   e.preventDefault();
-  //   // code to send updated information to the server
-  //   console.log(username, email, birthday);
-  // };
-
   //************************************* */
   const toggleFavorite = (movieId) => {
     const isFavorite = userInfo?.FavoriteMovies.includes(movieId);
@@ -51,6 +44,12 @@ export const ProfileView = ({ movies, user }) => {
     const url = isFavorite
       ? `${urlBase}/FavoriteMovies/${movieId}`
       : `${urlBase}/movies/${movieId}`;
+
+    // Optimistically update the UI
+    let updatedFavorites = isFavorite
+      ? userInfo.FavoriteMovies.filter((id) => id !== movieId)
+      : [...userInfo.FavoriteMovies, movieId];
+    setUserInfo({ ...userInfo, FavoriteMovies: updatedFavorites });
 
     fetch(url, {
       method: method,
@@ -75,7 +74,6 @@ export const ProfileView = ({ movies, user }) => {
       .then((data) => {
         // We update the state or do something else depending on the response
         if (typeof data === "string") {
-          // Обработка текстового сообщения от сервера, если необходимо
           console.log(data);
         } else {
           // 'data' is assumed to be the updated userInfo object
@@ -84,17 +82,16 @@ export const ProfileView = ({ movies, user }) => {
       })
       .catch((error) => {
         console.error(error);
+        // If error, revert to the original favorites state
+        setUserInfo(userInfo); // Revert optimistic update on error. Make sure to handle this correctly.
       });
   };
-  // console.log(toggleFavorite);
 
-  //****************************************** */
   const isFavorite = (movieId) => userInfo?.FavoriteMovies.includes(movieId);
-  //****************************************** */
 
   if (!userInfo) return <div>Loading...</div>;
 
-  // Function to handle user deregistration ************************************
+  // Function to handle user deregistration
   const handleDeregister = () => {
     const confirmDeregister = window.confirm(
       "Are you sure you want to deregister?"
@@ -237,7 +234,7 @@ export const ProfileView = ({ movies, user }) => {
             .filter((m) => userInfo?.FavoriteMovies.includes(m._id))
             .map((movie) => (
               <Col key={movie._id} sm={6} md={4} lg={3} className="mb-4">
-                {/* Компонент MovieCard должен быть адаптирован для использования с react-bootstrap, если необходимо */}
+                {/* */}
                 <MovieCard
                   key={movie._id}
                   movie={movie}

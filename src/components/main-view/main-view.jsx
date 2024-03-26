@@ -19,7 +19,6 @@ const MainView = () => {
 
   useEffect(() => {
     if (!token) {
-      // console.log("Token not found.");
       return;
     }
 
@@ -43,7 +42,6 @@ const MainView = () => {
           ImagePath: movie.ImagePath,
         }));
         setMovies(formattedMovies);
-        // console.log("Formatted movies:", formattedMovies);
       })
       .catch((error) => {
         console.error("There was a problem with your fetch operation:", error);
@@ -56,7 +54,6 @@ const MainView = () => {
     localStorage.clear();
   };
 
-  /*********************************** */
   const toggleFavorite = (movieId) => {
     const isFavorite = userInfo?.FavoriteMovies.includes(movieId);
     const method = isFavorite ? "DELETE" : "POST";
@@ -88,7 +85,6 @@ const MainView = () => {
       .then((data) => {
         // We update the state or do something else depending on the response
         if (typeof data === "string") {
-          // Обработка текстового сообщения от сервера, если необходимо
           console.log(data);
         } else {
           // 'data' is assumed to be the updated userInfo object
@@ -100,9 +96,7 @@ const MainView = () => {
       });
   };
 
-  /*********************************** */
   const isFavorite = (movieId) => userInfo?.FavoriteMovies.includes(movieId);
-  /*********************************** */
 
   return (
     <BrowserRouter>
