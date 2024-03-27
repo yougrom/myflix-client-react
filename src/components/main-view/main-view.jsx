@@ -17,6 +17,8 @@ const MainView = () => {
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     if (!token) {
       return;
@@ -100,7 +102,12 @@ const MainView = () => {
 
   return (
     <BrowserRouter>
-      <NavigationBar user={user} onLoggedOut={onLoggedOut} />
+      <NavigationBar
+        user={user}
+        onLoggedOut={onLoggedOut}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <Row className="justify-content-md-center">
         <Routes>
           <Route
@@ -146,22 +153,27 @@ const MainView = () => {
                 <Col>The list is empty!</Col>
               ) : (
                 <>
-                  {movies.map((movie) => (
-                    <Col
-                      key={movie._id}
-                      sm={6}
-                      md={4}
-                      lg={3}
-                      className="margin"
-                    >
-                      <MovieCard
+                  {movies
+                    .filter((movie) =>
+                      movie.Title.toLowerCase().includes(
+                        searchQuery.toLowerCase()
+                      )
+                    )
+                    .map((movie) => (
+                      <Col
                         key={movie._id}
-                        movie={movie}
-                        toggleFavorite={() => toggleFavorite(movie._id)}
-                        isFavorite={isFavorite(movie._id)}
-                      />
-                    </Col>
-                  ))}
+                        sm={6}
+                        md={4}
+                        lg={3}
+                        className="margin"
+                      >
+                        <MovieCard
+                          movie={movie}
+                          toggleFavorite={() => toggleFavorite(movie._id)}
+                          isFavorite={isFavorite(movie._id)}
+                        />
+                      </Col>
+                    ))}
                 </>
               )
             }

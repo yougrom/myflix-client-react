@@ -1,7 +1,12 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-export const NavigationBar = ({ user, onLoggedOut }) => {
+export const NavigationBar = ({
+  user,
+  onLoggedOut,
+  searchQuery,
+  setSearchQuery,
+}) => {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -11,9 +16,8 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            {/* Conditionally render links based on authentication status */}
+            {/* Conditional rendering based on authentication */}
             {user ? (
-              // Links for authenticated users
               <>
                 <Nav.Link as={Link} to="/">
                   Home
@@ -26,7 +30,6 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                 </Nav.Link>
               </>
             ) : (
-              // Links for unauthenticated users
               <>
                 <Nav.Link as={Link} to="/login">
                   Login
@@ -37,6 +40,17 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
               </>
             )}
           </Nav>
+          {/* Search input field */}
+          <form className="d-flex">
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Search movies..."
+              aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
         </Navbar.Collapse>
       </Container>
     </Navbar>
